@@ -1,0 +1,7 @@
+03:10:02 **** Incremental Build of configuration Debug for project Final-Project ****
+make -j16 all 
+arm-none-eabi-size  Final-Project.elf 
+   text	   data	    bss	    dec	    hex	filename
+  24844	    336	   3384	  28564	   6f94	Final-Project.elf
+Finished building: default.size.stdout
+ 

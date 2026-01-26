@@ -1,0 +1,18 @@
+/*
+ * pwm_led.h
+ *
+ *  Created on: Jan 26, 2026
+ *      Author: Abdelrahman Salama
+ */
+
+#ifndef INC_PWM_LED_H_
+#define INC_PWM_LED_H_
+
+#include <stdint.h>
+#include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_tim.h"   // ده المهم
+
+void PWM_LED_Start(TIM_HandleTypeDef *htim, uint32_t channel);
+void PWM_LED_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty);
+
+#endif /* INC_PWM_LED_H_ */

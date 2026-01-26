@@ -1,0 +1,2 @@
+../Core/Src/bh1750.c:14:19:BH1750_Init	32	static
+../Core/Src/bh1750.c:33:19:BH1750_ReadLux	32	static
