@@ -149,18 +149,17 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	    if (HAL_GetTick() - last_ms >= 200) {   // every 200ms
-		      last_ms += 200;
-
-		      if (BH1750_ReadLux(&hi2c1, &lux) == HAL_OK) {
-		        float u = PI_Update(&pi, target_lux, lux);
-		        PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u);
-		      } else {
-		        PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, 0.0f);
-		      }
-		    }
     /* USER CODE END WHILE */
+	    if (HAL_GetTick() - last_ms >= 200) {   // every 200ms
+	      last_ms += 200;
 
+	      if (BH1750_ReadLux(&hi2c1, &lux) == HAL_OK) {
+	        float u = PI_Update(&pi, target_lux, lux);
+	        PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u);
+	      } else {
+	        PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, 0.0f);
+	      }
+	    }
 
     /* USER CODE BEGIN 3 */
   }
