@@ -24,7 +24,7 @@ void PWM_LED_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty)
     duty = clamp(duty);
 
     uint32_t arr = __HAL_TIM_GET_AUTORELOAD(htim);
-    uint32_t ccr = (uint32_t)((float)arr * duty );
+    uint32_t ccr = (uint32_t)(duty * arr);
 
     __HAL_TIM_SET_COMPARE(htim, channel, ccr);
 }

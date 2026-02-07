@@ -25,17 +25,12 @@ float PI_Update(PI_t *pi, float ref, float meas)
 {
     float error = ref - meas;
 
-    pi->integrator += (pi->ki * pi->Ts * error);
+    pi->integrator += pi->ki * pi->Ts * error;
 
-    float out = (pi->kp * error) + pi->integrator;
+    float out = pi->kp * error + pi->integrator;
 
-    if (out > pi->out_max) {
-        out = pi->out_max;
-        // optional: pi->integrator = out - pi->kp*error;
-    } else if (out < pi->out_min) {
-        out = pi->out_min;
-        // optional: pi->integrator = out - pi->kp*error;
-    }
+    if (out > pi->out_max) out = pi->out_max;
+    if (out < pi->out_min) out = pi->out_min;
 
     return out;
 }

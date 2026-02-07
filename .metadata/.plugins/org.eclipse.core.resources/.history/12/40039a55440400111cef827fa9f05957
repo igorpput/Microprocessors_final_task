@@ -72,13 +72,13 @@ PI_t pi;
 
 float target_lux = 200.0f;
 float lux = 0.0f;
-
-float u_last = 0.0f;
 uint32_t last_ms = 0;
 
-char uart_buf[128];
-uint8_t rx_char;
+// keep last PWM duty even if BH1750 read fails (prevents flicker)
+float u_last = 0.4f;
 
+// optional debug buffer
+char uart_buf[96];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -117,87 +117,63 @@ int main(void)
   MX_TIM1_Init();
 
   /* USER CODE BEGIN 2 */
+  // Start PWM first
   PWM_LED_Start(&htim1, TIM_CHANNEL_1);
-  u_last = 30.0f / 100.0f;
-  PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
 
+  // Visible quick test: 70% brightness for 1 second
+  PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, 0.7f);
+  HAL_Delay(1000);
+
+  // Init BH1750
   BH1750_Init(&hi2c1);
 
-  // Safe initial PI values (can be tuned later)
-  PI_Init(&pi,
-          0.3f,     // Kp
-          0.05f,    // Ki
-          0.2f,     // Ts = 200 ms
-          0.0f,
-          1.0f);
+  // PI init (more stable gains to start)
+  // Ts = 0.2s (200 ms)
+  PI_Init(&pi, 0.3f, 0.05f, 0.2f, 0.0f, 1.0f);
 
   last_ms = HAL_GetTick();
 
-  // Startup message
-  int n = snprintf(uart_buf, sizeof(uart_buf),
-                   "System ready. Use + / - to change target\r\n");
-  HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
-
-
+  // initial output
+  PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-      /* ================= UART RX =================
-         Change target asynchronously
-         '+' : increase target
-         '-' : decrease target
-      */
-      if (HAL_UART_Receive(&huart3, &rx_char, 1, 0) == HAL_OK)
-      {
-          if (rx_char == '+') target_lux += 10.0f;
-          if (rx_char == '-') target_lux -= 10.0f;
+    // run every 200ms
+    if (HAL_GetTick() - last_ms >= 200U)
+    {
+      last_ms += 200U;
 
-          if (target_lux < 0.0f)    target_lux = 0.0f;
-          if (target_lux > 1000.0f) target_lux = 1000.0f;
+      // Try read lux
+      if (BH1750_ReadLux(&hi2c1, &lux) == HAL_OK)
+      {
+        // sanity clamp
+        if (lux < 0.0f) lux = 0.0f;
+        if (lux > 100000.0f) lux = 100000.0f;
+
+        float u = PI_Update(&pi, target_lux, lux);
+
+        // update only on valid reading
+        u_last = u;
+        PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
+      }
+      else
+      {
+        // IMPORTANT: Do NOT force duty to 0 on read fail.
+        // Keep last output to avoid flicker.
+        PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
       }
 
-      /* ================= CONTROL LOOP =================
-         Run every 200 ms (constant sampling time)
+      // OPTIONAL UART debug (uncomment if you want)
+      /*
+      int n = snprintf(uart_buf, sizeof(uart_buf),
+                       "lux=%.1f target=%.1f duty=%.2f\r\n",
+                       lux, target_lux, u_last);
+      HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
       */
-      if (HAL_GetTick() - last_ms >= 200U)
-      {
-          last_ms += 200U;
-
-          if (BH1750_ReadLux(&hi2c1, &lux) == HAL_OK)
-          {
-              if (lux < 0.0f)      lux = 0.0f;
-              if (lux > 100000.0f) lux = 100000.0f;
-
-              // ===== PI =====
-              float u = PI_Update(&pi, target_lux, lux);
-              u_last = u;
-              PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
-          }
-          else
-          {
-              // keep last output
-              PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
-          }
-
-          // ===== Req3 check (range 0..500 lux => 5% = 25 lux) =====
-          float err = target_lux - lux;
-          if (err < 0.0f) err = -err;
-          int pass = (err <= 25.0f);      // 1 = OK, 0 = NOT OK
-
-          // UART monitoring (no float)
-          int lux_i    = (int)lux;
-          int targ_i   = (int)target_lux;
-          int duty_pct = (int)(u_last * 100.0f);
-          int err_i    = (int)err;
-
-          int n = sprintf(uart_buf,
-                          "lux=%d target=%d duty=%d%% err=%d pass=%d\r\n",
-                          lux_i, targ_i, duty_pct, err_i, pass);
-          HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
-      }
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
