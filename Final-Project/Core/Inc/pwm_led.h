@@ -8,11 +8,9 @@
 #ifndef INC_PWM_LED_H_
 #define INC_PWM_LED_H_
 
-#include <stdint.h>
 #include "stm32f7xx_hal.h"
-#include "stm32f7xx_hal_tim.h"   // ده المهم
 
 void PWM_LED_Start(TIM_HandleTypeDef *htim, uint32_t channel);
-void PWM_LED_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty);
+void PWM_LED_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty_0_1);
 
-#endif /* INC_PWM_LED_H_ */
+#endif

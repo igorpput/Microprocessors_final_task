@@ -6,12 +6,7 @@
  */
 #include "pi_controller.h"
 
-void PI_Init(PI_t *pi,
-             float kp,
-             float ki,
-             float Ts,
-             float out_min,
-             float out_max)
+void PI_Init(PI_t *pi, float kp, float ki, float Ts, float out_min, float out_max)
 {
     pi->kp = kp;
     pi->ki = ki;
@@ -21,23 +16,29 @@ void PI_Init(PI_t *pi,
     pi->out_max = out_max;
 }
 
+void PI_Reset(PI_t *pi, float integrator_init)
+{
+    pi->integrator = integrator_init;
+}
+
 float PI_Update(PI_t *pi, float ref, float meas)
 {
-    float error = ref - meas;
+    float e = ref - meas;
 
-    pi->integrator += (pi->ki * pi->Ts * error);
+    // PI
+    float p = pi->kp * e;
+    float i = pi->integrator + (pi->ki * pi->Ts * e);
+    float u = p + i;
 
-    float out = (pi->kp * error) + pi->integrator;
+    // Saturate
+    if (u > pi->out_max) u = pi->out_max;
+    if (u < pi->out_min) u = pi->out_min;
 
-    if (out > pi->out_max) {
-        out = pi->out_max;
-        // optional: pi->integrator = out - pi->kp*error;
-    } else if (out < pi->out_min) {
-        out = pi->out_min;
-        // optional: pi->integrator = out - pi->kp*error;
-    }
+    // Anti-windup (clamp integrator so that p+i == u after saturation)
+    pi->integrator = u - p;
 
-    return out;
+    return u;
 }
+
 
 

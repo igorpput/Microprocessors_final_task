@@ -1,0 +1,57 @@
+/*
+ * bh1750.c
+ *
+ *  Created on: Jan 26, 2026
+ *      Author: Abdelrahman Salama
+ */
+#include "bh1750.h"
+
+/*
+ BH1750 typical I2C addresses:
+  - 0x23 (ADDR pin LOW or floating)
+  - 0x5C (ADDR pin HIGH)
+ HAL uses 8-bit address => (7-bit << 1)
+*/
+#define BH1750_ADDR_7BIT      (0x23)
+#define BH1750_ADDR           (BH1750_ADDR_7BIT << 1)
+
+#define BH1750_POWER_ON       0x01
+#define BH1750_RESET          0x07
+#define BH1750_CONT_H_RES     0x10   // Continuous High Resolution Mode (1 lx / 120ms)
+
+HAL_StatusTypeDef BH1750_Init(I2C_HandleTypeDef *hi2c)
+{
+    uint8_t cmd;
+
+    cmd = BH1750_POWER_ON;
+    if (HAL_I2C_Master_Transmit(hi2c, BH1750_ADDR, &cmd, 1, 100) != HAL_OK)
+        return HAL_ERROR;
+
+    cmd = BH1750_RESET;
+    if (HAL_I2C_Master_Transmit(hi2c, BH1750_ADDR, &cmd, 1, 100) != HAL_OK)
+        return HAL_ERROR;
+
+    cmd = BH1750_CONT_H_RES;
+    if (HAL_I2C_Master_Transmit(hi2c, BH1750_ADDR, &cmd, 1, 100) != HAL_OK)
+        return HAL_ERROR;
+
+    HAL_Delay(180); // wait first measurement
+    return HAL_OK;
+}
+
+HAL_StatusTypeDef BH1750_ReadLux(I2C_HandleTypeDef *hi2c, float *lux)
+{
+    uint8_t buf[2];
+
+    if (HAL_I2C_Master_Receive(hi2c, BH1750_ADDR, buf, 2, 100) != HAL_OK)
+        return HAL_ERROR;
+
+    uint16_t raw = ((uint16_t)buf[0] << 8) | buf[1];
+
+    // According to datasheet: lux = raw / 1.2 (for H-Resolution)
+    *lux = (float)raw / 1.2f;
+
+    return HAL_OK;
+}
+
+

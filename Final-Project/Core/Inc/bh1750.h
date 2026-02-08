@@ -5,16 +5,14 @@
  *      Author: Abdelrahman Salama
  */
 
-#ifndef BH1750_H
-#define BH1750_H
+#ifndef INC_BH1750_H_
+#define INC_BH1750_H_
 
 #include "stm32f7xx_hal.h"
 
-// initialize sensor
-HAL_StatusTypeDef BH1750_Init(I2C_HandleTypeDef *hi2c);
+#define BH1750_ADDR_DEFAULT (0x23 << 1)
 
-// read lux value
-HAL_StatusTypeDef BH1750_ReadLux(I2C_HandleTypeDef *hi2c, float *lux);
+HAL_StatusTypeDef BH1750_Init(I2C_HandleTypeDef *hi2c);
+HAL_StatusTypeDef BH1750_ReadLux(I2C_HandleTypeDef *hi2c, float *lux_out);
 
 #endif
-

@@ -1,0 +1,220 @@
+Terminal log file
+Date: 07/02/2026 - 20:04:38
+-----------------------------------------------
+READY
+Commands:
++ / - : target +/-10
+s : step test (target 200->300) + log csv
+l : toggle logging
+r : reset PI integrator
+READY
+Commands:
++ / - : target +/-10 lux
+l     : toggle CSV logging
+s     : step test (200->300) + CSV for 15s
+r     : reset PI integrator
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+READY
+Commands:
++ / - : target +/-10 lux
+l     : toggle CSV logging
+s     : step test (200->300) + CSV for 15s
+r     : reset PI integrator
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+READY
+Commands:
++ / - : target +/-10 lux
+l     : toggle CSV logging
+s     : step test (200->300) + CSV for 15s
+r     : reset PI integrator
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+r=200 pass=0
+lux=0 target=200 duty=30% erlux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+lux=0 target=200 duty=30% err=200 pass=0
+
+-----------------------------------------------
+Date: 07/02/2026 - 20:16:16
+End log file

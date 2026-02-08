@@ -4,25 +4,16 @@
   * @file           : main.c
   * @brief          : Main program body
   ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
   */
 /* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "string.h"
+#include <string.h>
 #include <stdio.h>
 
-#include "bh1750.h"
 #include "pi_controller.h"
+#include "bh1750.h"
 #include "pwm_led.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -35,6 +26,18 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+/* ===== Project settings ===== */
+#define TS_MS               200U
+#define TS_SEC              0.2f
+
+#define CONTROL_RANGE_LUX   500.0f
+#define ERR_5_PERCENT_LUX   (0.05f * CONTROL_RANGE_LUX)   /* 25 lux if range 0..500 */
+
+#define STEP_DURATION_MS    15000U   /* log 15s then stop */
+#define STEP_FROM_LUX       200.0f
+#define STEP_TO_LUX         300.0f
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,21 +45,19 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-#if defined ( __ICCARM__ ) /*!< IAR Compiler */
+#if defined ( __ICCARM__ )
 #pragma location=0x2004c000
-ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptors */
+ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT];
 #pragma location=0x2004c0a0
-ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
+ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT];
 
-#elif defined ( __CC_ARM )  /* MDK ARM Compiler */
+#elif defined ( __CC_ARM )
+__attribute__((at(0x2004c000))) ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT];
+__attribute__((at(0x2004c0a0))) ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT];
 
-__attribute__((at(0x2004c000))) ETH_DMADescTypeDef  DMARxDscrTab[ETH_RX_DESC_CNT]; /* Ethernet Rx DMA Descriptors */
-__attribute__((at(0x2004c0a0))) ETH_DMADescTypeDef  DMATxDscrTab[ETH_TX_DESC_CNT]; /* Ethernet Tx DMA Descriptors */
-
-#elif defined ( __GNUC__ ) /* GNU Compiler */
-
-ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT] __attribute__((section(".RxDecripSection"))); /* Ethernet Rx DMA Descriptors */
-ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT] __attribute__((section(".TxDecripSection")));   /* Ethernet Tx DMA Descriptors */
+#elif defined ( __GNUC__ )
+ETH_DMADescTypeDef DMARxDscrTab[ETH_RX_DESC_CNT] __attribute__((section(".RxDecripSection")));
+ETH_DMADescTypeDef DMATxDscrTab[ETH_TX_DESC_CNT] __attribute__((section(".TxDecripSection")));
 #endif
 
 ETH_TxPacketConfig TxConfig;
@@ -71,19 +72,21 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 PI_t pi;
 
 float target_lux = 200.0f;
-float lux = 0.0f;
+float lux        = 0.0f;
 
-float u_last = 0.0f;
+float u_last     = 0.30f;   /* start at 30% */
 uint32_t last_ms = 0;
 
-char uart_buf[128];
-uint8_t rx_char;
+char uart_buf[160];
+uint8_t rx_char = 0;
 
+uint8_t do_log = 0;         /* 0=status lines, 1=CSV */
+uint8_t step_active = 0;
+uint32_t t0_ms = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-
 static void MX_GPIO_Init(void);
 static void MX_ETH_Init(void);
 static void MX_I2C1_Init(void);
@@ -92,10 +95,38 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_TIM1_Init(void);
 
 /* USER CODE BEGIN PFP */
+static void UART_PrintHelp(void);
+static void UART_PrintCSVHeader(void);
+static void ClampTarget(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+static void UART_PrintHelp(void)
+{
+  int n = sprintf(uart_buf,
+      "READY\r\n"
+      "Commands:\r\n"
+      "+ / - : target +/-10 lux\r\n"
+      "l     : toggle CSV logging\r\n"
+      "s     : step test (200->300) + CSV for 15s\r\n"
+      "r     : reset PI integrator\r\n");
+  HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
+}
+
+static void UART_PrintCSVHeader(void)
+{
+  int n = sprintf(uart_buf, "t_ms,lux,target,duty\r\n");
+  HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
+}
+
+static void ClampTarget(void)
+{
+  if (target_lux < 0.0f)    target_lux = 0.0f;
+  if (target_lux > 1000.0f) target_lux = 1000.0f;
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -118,97 +149,146 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
   PWM_LED_Start(&htim1, TIM_CHANNEL_1);
-  u_last = 30.0f / 100.0f;
   PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
 
   BH1750_Init(&hi2c1);
 
-  // Safe initial PI values (can be tuned later)
+  /* Safe initial PI values (tune later) */
   PI_Init(&pi,
-          0.3f,     // Kp
-          0.05f,    // Ki
-          0.2f,     // Ts = 200 ms
-          0.0f,
-          1.0f);
+          0.30f,    /* Kp */
+          0.05f,    /* Ki */
+          TS_SEC,   /* Ts */
+          0.0f,     /* out_min */
+          1.0f);    /* out_max */
 
   last_ms = HAL_GetTick();
 
-  // Startup message
-  int n = snprintf(uart_buf, sizeof(uart_buf),
-                   "System ready. Use + / - to change target\r\n");
-  HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
-
-
+  UART_PrintHelp();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-      /* ================= UART RX =================
-         Change target asynchronously
-         '+' : increase target
-         '-' : decrease target
-      */
-      if (HAL_UART_Receive(&huart3, &rx_char, 1, 0) == HAL_OK)
+    /* ===== UART non-blocking receive (timeout 0) ===== */
+    if (HAL_UART_Receive(&huart3, &rx_char, 1, 0) == HAL_OK)
+    {
+      if (rx_char == '+') target_lux += 10.0f;
+      if (rx_char == '-') target_lux -= 10.0f;
+
+      if (rx_char == 'l')
       {
-          if (rx_char == '+') target_lux += 10.0f;
-          if (rx_char == '-') target_lux -= 10.0f;
-
-          if (target_lux < 0.0f)    target_lux = 0.0f;
-          if (target_lux > 1000.0f) target_lux = 1000.0f;
-      }
-
-      /* ================= CONTROL LOOP =================
-         Run every 200 ms (constant sampling time)
-      */
-      if (HAL_GetTick() - last_ms >= 200U)
-      {
-          last_ms += 200U;
-
-          if (BH1750_ReadLux(&hi2c1, &lux) == HAL_OK)
-          {
-              if (lux < 0.0f)      lux = 0.0f;
-              if (lux > 100000.0f) lux = 100000.0f;
-
-              // ===== PI =====
-              float u = PI_Update(&pi, target_lux, lux);
-              u_last = u;
-              PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
-          }
-          else
-          {
-              // keep last output
-              PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
-          }
-
-          // ===== Req3 check (range 0..500 lux => 5% = 25 lux) =====
-          float err = target_lux - lux;
-          if (err < 0.0f) err = -err;
-          int pass = (err <= 25.0f);      // 1 = OK, 0 = NOT OK
-
-          // UART monitoring (no float)
-          int lux_i    = (int)lux;
-          int targ_i   = (int)target_lux;
-          int duty_pct = (int)(u_last * 100.0f);
-          int err_i    = (int)err;
-
-          int n = sprintf(uart_buf,
-                          "lux=%d target=%d duty=%d%% err=%d pass=%d\r\n",
-                          lux_i, targ_i, duty_pct, err_i, pass);
+        do_log ^= 1;
+        if (do_log)
+        {
+          t0_ms = HAL_GetTick();
+          UART_PrintCSVHeader();
+        }
+        else
+        {
+          int n = sprintf(uart_buf, "LOG OFF\r\n");
           HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
+        }
       }
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+      if (rx_char == 'r')
+      {
+        /* requires PI_Reset() to exist */
+        PI_Reset(&pi, 0.0f);
+        int n = sprintf(uart_buf, "PI RESET\r\n");
+        HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
+      }
+
+      if (rx_char == 's')
+      {
+        /* Step test: 200 -> 300, CSV for 15s */
+        target_lux = STEP_FROM_LUX;
+        HAL_Delay(800);
+
+        /* keep output continuity */
+        PI_Reset(&pi, u_last);
+
+        do_log = 1;
+        step_active = 1;
+        t0_ms = HAL_GetTick();
+
+        int n = sprintf(uart_buf, "STEP START\r\n");
+        HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
+        UART_PrintCSVHeader();
+
+        target_lux = STEP_TO_LUX;
+      }
+
+      ClampTarget();
+    }
+
+    /* ===== Control loop @ 200 ms (constant Ts) ===== */
+    if ((HAL_GetTick() - last_ms) >= TS_MS)
+    {
+      last_ms += TS_MS;
+
+      HAL_StatusTypeDef ok = BH1750_ReadLux(&hi2c1, &lux);
+
+      if (ok == HAL_OK)
+      {
+        if (lux < 0.0f)      lux = 0.0f;
+        if (lux > 100000.0f) lux = 100000.0f;
+
+        float u = PI_Update(&pi, target_lux, lux);
+
+        /* extra safety clamp */
+        if (u > 1.0f) u = 1.0f;
+        if (u < 0.0f) u = 0.0f;
+
+        u_last = u;
+        PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
+      }
+      else
+      {
+        /* keep last output (avoid flicker on I2C glitches) */
+        PWM_LED_SetDuty(&htim1, TIM_CHANNEL_1, u_last);
+      }
+
+      /* ===== Req3 monitor (steady-state error within 5% of range) ===== */
+      float err = target_lux - lux;
+      if (err < 0.0f) err = -err;
+      int pass = (err <= ERR_5_PERCENT_LUX);
+
+      /* ===== Print status / CSV (integers only) ===== */
+      int t_ms   = (int)(HAL_GetTick() - t0_ms);
+      int lux_i  = (int)(lux);
+      int trg_i  = (int)(target_lux);
+      int duty_i = (int)(u_last * 100.0f);
+
+      if (do_log)
+      {
+        int n = sprintf(uart_buf, "%d,%d,%d,%d\r\n", t_ms, lux_i, trg_i, duty_i);
+        HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
+
+        if (step_active && ((HAL_GetTick() - t0_ms) > STEP_DURATION_MS))
+        {
+          step_active = 0;
+          do_log = 0;
+          int n2 = sprintf(uart_buf, "STEP DONE\r\n");
+          HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n2, 50);
+        }
+      }
+      else
+      {
+        int n = sprintf(uart_buf,
+                        "lux=%d target=%d duty=%d%% err=%d pass=%d\r\n",
+                        lux_i, trg_i, duty_i, (int)err, pass);
+        HAL_UART_Transmit(&huart3, (uint8_t*)uart_buf, n, 50);
+      }
+    }
   }
+  /* USER CODE END WHILE */
+  /* USER CODE BEGIN 3 */
   /* USER CODE END 3 */
 }
 
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+/* =================== CubeMX generated functions (keep as is) =================== */
+
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -244,14 +324,9 @@ void SystemClock_Config(void)
   }
 }
 
-/**
-  * @brief ETH Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_ETH_Init(void)
 {
-   static uint8_t MACAddr[6];
+  static uint8_t MACAddr[6];
 
   heth.Instance = ETH;
   MACAddr[0] = 0x00;
@@ -277,11 +352,6 @@ static void MX_ETH_Init(void)
   TxConfig.CRCPadCtrl = ETH_CRC_PAD_INSERT;
 }
 
-/**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_I2C1_Init(void)
 {
   hi2c1.Instance = I2C1;
@@ -293,7 +363,6 @@ static void MX_I2C1_Init(void)
   hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-
   if (HAL_I2C_Init(&hi2c1) != HAL_OK)
   {
     Error_Handler();
@@ -310,11 +379,6 @@ static void MX_I2C1_Init(void)
   }
 }
 
-/**
-  * @brief TIM1 Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_TIM1_Init(void)
 {
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
@@ -329,7 +393,6 @@ static void MX_TIM1_Init(void)
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
     Error_Handler();
@@ -361,7 +424,6 @@ static void MX_TIM1_Init(void)
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
@@ -375,10 +437,9 @@ static void MX_TIM1_Init(void)
   sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
   sBreakDeadTimeConfig.BreakFilter = 0;
   sBreakDeadTimeConfig.Break2State = TIM_BREAK2_DISABLE;
-  sBreakDeadTimeConfig.Break2Polarity = TIM_BREAKPOLARITY_HIGH;
+  sBreakDeadTimeConfig.Break2Polarity = TIM_BREAK2POLARITY_HIGH;
   sBreakDeadTimeConfig.Break2Filter = 0;
   sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
-
   if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK)
   {
     Error_Handler();
@@ -387,11 +448,6 @@ static void MX_TIM1_Init(void)
   HAL_TIM_MspPostInit(&htim1);
 }
 
-/**
-  * @brief USART3 Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_USART3_UART_Init(void)
 {
   huart3.Instance = USART3;
@@ -404,18 +460,12 @@ static void MX_USART3_UART_Init(void)
   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
   huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-
   if (HAL_UART_Init(&huart3) != HAL_OK)
   {
     Error_Handler();
   }
 }
 
-/**
-  * @brief USB_OTG_FS Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_USB_OTG_FS_PCD_Init(void)
 {
   hpcd_USB_OTG_FS.Instance = USB_OTG_FS;
@@ -423,26 +473,17 @@ static void MX_USB_OTG_FS_PCD_Init(void)
   hpcd_USB_OTG_FS.Init.speed = PCD_SPEED_FULL;
   hpcd_USB_OTG_FS.Init.dma_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
-
-  // IMPORTANT: disable SOF to avoid conflicts on some pins (e.g., PA8)
-  hpcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
-
+  hpcd_USB_OTG_FS.Init.Sof_enable = ENABLE;
   hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
   hpcd_USB_OTG_FS.Init.vbus_sensing_enable = ENABLE;
   hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
-
   if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
   {
     Error_Handler();
   }
 }
 
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -481,23 +522,15 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
 }
 
-/* USER CODE BEGIN 4 */
-/* USER CODE END 4 */
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
 void Error_Handler(void)
 {
   __disable_irq();
-  while (1)
-  {
-  }
+  while (1) { }
 }
 
 #ifdef  USE_FULL_ASSERT
 void assert_failed(uint8_t *file, uint32_t line)
 {
+  (void)file; (void)line;
 }
 #endif /* USE_FULL_ASSERT */

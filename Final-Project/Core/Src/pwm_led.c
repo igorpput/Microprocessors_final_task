@@ -7,7 +7,7 @@
 
 #include "pwm_led.h"
 
-static float clamp(float x)
+static float clamp01(float x)
 {
     if (x < 0.0f) return 0.0f;
     if (x > 1.0f) return 1.0f;
@@ -19,13 +19,14 @@ void PWM_LED_Start(TIM_HandleTypeDef *htim, uint32_t channel)
     HAL_TIM_PWM_Start(htim, channel);
 }
 
-void PWM_LED_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty)
+void PWM_LED_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty_0_1)
 {
-    duty = clamp(duty);
+    duty_0_1 = clamp01(duty_0_1);
 
-    uint32_t arr = __HAL_TIM_GET_AUTORELOAD(htim);
-    uint32_t ccr = (uint32_t)((float)arr * duty );
+    uint32_t period = __HAL_TIM_GET_AUTORELOAD(htim);
+    uint32_t ccr = (uint32_t)(duty_0_1 * (float)period);
 
     __HAL_TIM_SET_COMPARE(htim, channel, ccr);
 }
+
 
