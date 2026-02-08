@@ -1,0 +1,3 @@
+../Core/Src/serial_cmd.c:29:16:Calculate_Checksum	24	static
+../Core/Src/serial_cmd.c:39:6:Parse_UART_Command	208	static
+../Core/Src/serial_cmd.c:102:6:Serial_RxCallback	16	static

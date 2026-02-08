@@ -1,0 +1,2 @@
+../Core/Src/interface.c:20:6:Interface_Update	24	static
+../Core/Src/interface.c:40:6:Interface_Init	8	static
