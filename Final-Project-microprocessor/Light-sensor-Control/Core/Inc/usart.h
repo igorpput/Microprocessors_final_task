@@ -29,19 +29,19 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
+/* ======== GLOBAL HANDLES ======== */
 extern UART_HandleTypeDef huart3;
+extern DMA_HandleTypeDef hdma_usart3_tx;
 
 /* USER CODE BEGIN Private defines */
-
 /* USER CODE END Private defines */
 
+/* ======== INIT FUNCTION ======== */
 void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
@@ -49,4 +49,3 @@ void MX_USART3_UART_Init(void);
 #endif
 
 #endif /* __USART_H__ */
-

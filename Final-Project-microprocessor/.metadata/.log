@@ -95,3 +95,217 @@ COM5
 
 !ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 03:37:37.995
 !MESSAGE port: 
+!SESSION 2026-02-08 11:44:06.860 -----------------------------------------------
+eclipse.buildId=Version 2.0.0
+java.version=21.0.8
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-02-08 11:44:32.132
+!MESSAGE Log4j2 initialized with config file C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-02-08 11:44:38.332
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 11:44:39.397
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 11:44:39.398
+!MESSAGE port: 
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 11:55:24.849
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 11:55:24.850
+!MESSAGE port: COM5
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:11:27.471
+!MESSAGE Program file does not exist
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:11:27.471
+!MESSAGE 
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:17:30.530
+!MESSAGE Program file does not exist
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:17:30.530
+!MESSAGE 
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:17:40.989
+!MESSAGE Program file does not exist
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:17:40.989
+!MESSAGE 
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:17:43.740
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:17:43.741
+!MESSAGE port: 
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:17:45.786
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:17:45.786
+!MESSAGE port: COM5
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:17:48.476
+!MESSAGE Program file does not exist
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:17:48.476
+!MESSAGE 
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:18:01.770
+!MESSAGE Program file does not exist
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:18:01.770
+!MESSAGE 
+
+!ENTRY org.eclipse.cdt.launch 4 104 2026-02-08 12:18:07.103
+!MESSAGE Program file does not exist
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:18:48.278
+!MESSAGE Program file does not exist
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:18:48.278
+!MESSAGE 
+!SESSION 2026-02-08 12:19:41.894 -----------------------------------------------
+eclipse.buildId=Version 2.0.0
+java.version=21.0.8
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-02-08 12:19:48.303
+!MESSAGE Log4j2 initialized with config file C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-02-08 12:19:52.518
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:19:52.874
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:19:52.874
+!MESSAGE port: COM5
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:20:05.137
+!MESSAGE Program file does not exist
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 104 2026-02-08 12:20:05.137
+!MESSAGE 
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2026-02-08 12:21:47.811
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+-exec-run
+Error message from debugger back end:
+Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-exec-run
+Error message from debugger back end:
+Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.lang.Exception: Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10004 2026-02-08 12:21:47.812
+!MESSAGE Failed to execute MI command:
+-exec-run
+Error message from debugger back end:
+Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+!STACK 0
+java.lang.Exception: Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2026-02-08 12:21:49.309
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+-exec-run
+Error message from debugger back end:
+Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+-exec-run
+Error message from debugger back end:
+Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:805)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:716)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1054)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1257)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: java.lang.Exception: Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10004 2026-02-08 12:21:49.309
+!MESSAGE Failed to execute MI command:
+-exec-run
+Error message from debugger back end:
+Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+!STACK 0
+java.lang.Exception: Error creating process C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\Debug\Light-sensor-Control.elf, (error 193: unknown win32 error (193))
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf.gdb.ui 4 5012 2026-02-08 12:21:52.945
+!MESSAGE Terminate failed
+!SUBENTRY 1 org.eclipse.debug.core 4 5010 2026-02-08 12:21:52.945
+!MESSAGE Terminate failed
+
+!ENTRY org.eclipse.cdt.dsf.gdb.ui 4 5012 2026-02-08 12:21:53.441
+!MESSAGE Terminate failed
+!SUBENTRY 1 org.eclipse.debug.core 4 5010 2026-02-08 12:21:53.441
+!MESSAGE Terminate failed
+
+!ENTRY org.eclipse.cdt.dsf.gdb.ui 4 5012 2026-02-08 12:21:54.462
+!MESSAGE Terminate failed
+!SUBENTRY 1 org.eclipse.debug.core 4 5010 2026-02-08 12:21:54.462
+!MESSAGE Terminate failed
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:22:17.082
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:22:17.083
+!MESSAGE port: 
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:27:47.091
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 12:27:47.092
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 13:38:29.069
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 13:38:29.069
+!MESSAGE port: COM5
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 13:38:50.859
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM5
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-02-08 13:38:50.860
+!MESSAGE port: COM5

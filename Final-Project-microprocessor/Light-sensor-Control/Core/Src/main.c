@@ -19,6 +19,8 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
 #include "led_config.h"
 #include "aio.h"
 #include "bh1750_config.h"
@@ -55,7 +57,6 @@ typedef struct {
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
 /* USER CODE BEGIN PV */
 uint8_t rx_buffer[1];
 uint8_t cmd_buffer[32];
@@ -87,6 +88,7 @@ _Bool txFlag = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+
 /* USER CODE BEGIN PFP */
 void process_uart_command(uint8_t c);
 /* USER CODE END PFP */
@@ -96,6 +98,7 @@ void process_uart_command(uint8_t c);
 
 /**
   * @brief  Rx callback
+  *  IMPORTANT: Don't transmit inside RX interrupt (can break UART).
   */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -109,8 +112,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 /**
   * @brief  Process UART command
   * Keys:
-  *   L -> set lux (0..2000) then Enter
-  *   I -> status
+  *   L/R -> set lux (0..2000) then Enter
+  *   I/S -> status
   *   ? -> help
   *   ESC -> cancel input
   */
@@ -154,14 +157,13 @@ void process_uart_command(uint8_t c)
       {
         cmd_buffer[cmd_idx] = '\0';
 
-        int value = 0;
-        sscanf((char*)cmd_buffer, "%d", &value);
+        int value = atoi((char*)cmd_buffer);
 
         if(value >= 0 && value <= 2000)
         {
           luminance_ref = (float)value;
 
-          uint8_t ack[48];
+          uint8_t ack[64];
           int len = sprintf((char*)ack, "\r\n[OK] Ref Lux = %d\r\n", value);
           HAL_UART_Transmit(&huart3, ack, len, 100);
         }
@@ -234,7 +236,6 @@ void process_uart_command(uint8_t c)
   // ignore anything else
 }
 
-
 /**
   * @brief  Period elapsed callback
   */
@@ -282,12 +283,12 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
       if(duty_pi < 0.0f) duty_pi = 0.0f;
       else if(duty_pi > 100.0f) duty_pi = 100.0f;
 
-      // *** RATE LIMITING: Limit how fast duty can change ***
+      // *** RATE LIMITING ***
       float duty_change = duty_pi - duty_filtered;
       if(duty_change > MAX_DUTY_CHANGE) duty_change = MAX_DUTY_CHANGE;
       else if(duty_change < -MAX_DUTY_CHANGE) duty_change = -MAX_DUTY_CHANGE;
 
-      // *** LOW-PASS FILTER: Smooth the output ***
+      // *** LOW-PASS FILTER ***
       duty_filtered = duty_filtered + DUTY_FILTER_ALPHA * duty_change;
 
       // Final clamp
@@ -338,20 +339,10 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
   HAL_Init();
-
-  /* USER CODE BEGIN Init */
-  /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -375,7 +366,7 @@ int main(void)
   pi.out_min = 0.0f;
   pi.out_max = 100.0f;
 
-  // Start UART
+  // Start UART RX
   HAL_UART_Receive_IT(&huart3, rx_buffer, 1);
 
   // Initial sensor reading
@@ -400,12 +391,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-    HAL_Delay(100);
+    // Optional heartbeat (keeps it simple)
+    uint8_t hb[] = "HB\r\n";
+    HAL_UART_Transmit(&huart3, hb, sizeof(hb)-1, 100);
+    HAL_Delay(1000);
   }
-  /* USER CODE END 3 */
+  /* USER CODE END WHILE */
 }
 
 /**
@@ -452,27 +443,20 @@ void SystemClock_Config(void)
   }
 }
 
-/* USER CODE BEGIN 4 */
-/* USER CODE END 4 */
-
 /**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
   __disable_irq();
   while (1)
   {
   }
-  /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef USE_FULL_ASSERT
 void assert_failed(uint8_t *file, uint32_t line)
 {
-  /* USER CODE BEGIN 6 */
-  /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

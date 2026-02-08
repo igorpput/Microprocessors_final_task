@@ -22,11 +22,13 @@
 
 /* USER CODE BEGIN 0 */
 /* USER CODE END 0 */
-
+#if 0
 UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart3_tx;
+#endif
 
 /* USART3 init function */
+#if 0
 void MX_USART3_UART_Init(void)
 {
   /* USER CODE BEGIN USART3_Init 0 */
@@ -54,7 +56,7 @@ void MX_USART3_UART_Init(void)
   /* USER CODE BEGIN USART3_Init 2 */
   /* USER CODE END USART3_Init 2 */
 }
-
+#endif
 void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
