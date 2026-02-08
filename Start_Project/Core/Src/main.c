@@ -21,9 +21,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "controller.h"
 #include <stdio.h>
 #include "ssd1306.h"
 #include "ssd1306_fonts.h"
+#include <string.h>
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,17 +49,34 @@
 I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
+TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart3;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
+volatile uint8_t run_controller_flag = 0;
+
+volatile uint8_t uart_msg_received = 0;
+
 char bufor[50];
 int counterskb = 0;
 int steop=50;
 int luxes = 0;
+
+
+uint8_t rx_data;
+char rx_buffer[50];
+uint8_t rx_index = 0;
+
+
+int position = 0;
+uint32_t last_counter_value = 32000;
+
+extern volatile SystemState sys_state;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -68,6 +88,8 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_TIM3_Init(void);
+static void MX_TIM8_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -75,6 +97,104 @@ static void MX_TIM1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim4;
+
+extern int position; // brightness var
+extern uint32_t last_counter_value; // global encoder var
+
+// helper for xor calc
+uint8_t Calculate_Checksum(char* str) {
+    uint8_t checksum = 0;
+    while (*str) {
+        checksum ^= *str; // xor every char
+        str++;
+    }
+    return checksum;
+}
+
+void Parse_UART_Command() {
+    // 1. check checksum
+    char *semicolon_ptr = strchr(rx_buffer, ';');
+    if (semicolon_ptr != NULL) {
+        *semicolon_ptr = 0;
+        char *checksum_str = semicolon_ptr + 1;
+        int received_checksum = atoi(checksum_str);
+        int calculated_checksum = Calculate_Checksum(rx_buffer);
+
+        if (received_checksum != calculated_checksum) {
+            static char err_msg[64];
+            sprintf(err_msg, "CHECKSUM ERROR (Recv:%d != Calc:%d)\r\n", received_checksum, calculated_checksum);
+            // blocking now (100ms timeout)
+            HAL_UART_Transmit(&huart3, (uint8_t*)err_msg, strlen(err_msg), 100);
+            return;
+        }
+    }
+
+    // 2. command handling
+
+    // PRCT
+    if (strncmp(rx_buffer, "PRCT", 4) == 0) {
+        int value = atoi(&rx_buffer[5]);
+        if (value > 100) value = 100;
+        if (value < 0) value = 0;
+        position = value;
+        __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, position * 10);
+
+        char *msg = "OK PRCT";
+        uint8_t csum = Calculate_Checksum(msg);
+        char resp[32];
+        sprintf(resp, "%s;%d\r\n", msg, csum);
+        // blocking now
+        HAL_UART_Transmit(&huart3, (uint8_t*)resp, strlen(resp), 100);
+    }
+
+    // SET
+    else if (strncmp(rx_buffer, "SET", 3) == 0) {
+        int value = atoi(&rx_buffer[4]);
+        if (value > 2000) value = 2000;
+        if (value < 0) value = 0;
+
+        sys_state.setpoint_lux = value;
+        __HAL_TIM_SET_COUNTER(&htim8, value * 2);
+
+        char *msg = "OK SET";
+        uint8_t csum = Calculate_Checksum(msg);
+        char resp[32];
+        sprintf(resp, "%s;%d\r\n", msg, csum);
+        // blocking now
+        HAL_UART_Transmit(&huart3, (uint8_t*)resp, strlen(resp), 100);
+    }
+
+    // GET INFO
+    else if (strncmp(rx_buffer, "GET INFO", 8) == 0) {
+        char data_part[64];
+        char full_msg[80];
+        sprintf(data_part, "INFO %d %d", sys_state.setpoint_lux, position);
+        uint8_t csum = Calculate_Checksum(data_part);
+        sprintf(full_msg, "%s;%d\r\n", data_part, csum);
+
+        // blocking now - crucial for polling stability
+        HAL_UART_Transmit(&huart3, (uint8_t*)full_msg, strlen(full_msg), 100);
+    }
+}
+
+// callback (just for safety)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART3) {
+        if (rx_data == '\n' || rx_data == '\r') {
+            rx_buffer[rx_index] = 0;
+            // just set flag, don't parse here
+            uart_msg_received = 1;
+            rx_index = 0;
+        }
+        else {
+            if (rx_index < 49) rx_buffer[rx_index++] = rx_data;
+        }
+        HAL_UART_Receive_IT(&huart3, &rx_data, 1);
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -114,6 +234,8 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM4_Init();
   MX_TIM1_Init();
+  MX_TIM3_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   ssd1306_Init();
   ssd1306_Fill(Black);
@@ -138,22 +260,27 @@ int main(void)
   ssd1306_UpdateScreen();
 */
 
-  ssd1306_Init();
+  	ssd1306_Init();
     ssd1306_Fill(Black);
 
-    // 1. Start Enkodera (Teraz na TIM1!)
+    // 1. start encoder (now on TIM1)
     HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
 
-    // 2. Start Diody (Teraz na TIM4, Kanał 4!)
+    // 2. start led (now TIM4 CH4)
     HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 
-    // Zmienne startowe
-    int32_t last_counter_value = 32000;
-    int position = 0;
+    HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL); // encoder 2 (target)
+    HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);       // led 2 (pid control)
 
-    // Ustawienie enkodera na środek
+    HAL_TIM_Base_Start_IT(&htim3);
+    HAL_UART_Receive_IT(&huart3, &rx_data, 1);
+
+    uint8_t bh_cmd = 0x10; // cmd: continuous high-res
+    HAL_I2C_Master_Transmit(&hi2c1, (0x23 << 1), &bh_cmd, 1, 100);
+
+    // set encoder to center
     __HAL_TIM_SET_COUNTER(&htim1, 32000);
-
+    __HAL_TIM_SET_COUNTER(&htim8, 100);   // target start 100 lux (200/2)
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -161,44 +288,60 @@ int main(void)
 
   while (1)
   {
+	  // controller logic (every 200ms)
+	        if (run_controller_flag == 1) {
+	            run_controller_flag = 0;
+	            Controller_Step();
+	        }
+
+	        // >>> NEW: safe uart handling <<<
+	        if (uart_msg_received == 1) {
+	            uart_msg_received = 0; // clear flag
+	            Parse_UART_Command();  // run logic
+	        }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  // A. Pobierz wartość z TIM1 (Enkoder)
+	  // need state var
+	      extern volatile SystemState sys_state;
+
+	      // --- ENCODER 1 HANDLING (DISTURBANCE) ---
+	      // (no changes - controls led 1)
 	      uint32_t current_counter = __HAL_TIM_GET_COUNTER(&htim1);
-
-	      // B. Policz różnicę
 	      int16_t diff = (int16_t)(current_counter - last_counter_value);
-
-	      // C. Logika (jeśli ruszono gałką)
 	      if (diff != 0) {
-	          if(diff > 0) position += 1;
-	          else position -= 1;
-
-	          // Clamp 0-100%
+	          if(diff > 0) position += 5;
+	          else position -= 5;
 	          if (position > 100) position = 100;
 	          if (position < 0) position = 0;
-
 	          last_counter_value = current_counter;
 	      }
-
-	      // D. Wyświetlanie
-	      ssd1306_Fill(Black);
-	      sprintf(bufor, "Moc: %d %%", position);
-	      ssd1306_SetCursor(0, 10);
-	      ssd1306_WriteString(bufor, Font_11x18, White);
-
-	      // Debug: Pokaż RAW z TIM1
-	      sprintf(bufor, "Raw: %lu", current_counter);
-	      ssd1306_SetCursor(0, 40);
-	      ssd1306_WriteString(bufor, Font_7x10, White);
-	      ssd1306_UpdateScreen();
-
-	      // E. Wyślij na diodę (Teraz TIM4, Kanał 4!)
+	      // drive disturbance led
 	      __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, position * 10);
 
-	      HAL_Delay(10);
-  }
+
+	      // --- OLED DISPLAY ---
+	      ssd1306_Fill(Black);
+
+	      // Line 1: TARGET (Setpoint) - turn Encoder 2
+	      sprintf(bufor, "AIM: %d Lx", sys_state.setpoint_lux);
+	      ssd1306_SetCursor(0, 0);
+	      ssd1306_WriteString(bufor, Font_11x18, White);
+
+	      // Line 2: CURRENT (Measurement) - from sensor
+	      sprintf(bufor, "ACT: %.1f", sys_state.current_lux);
+	      ssd1306_SetCursor(0, 20);
+	      ssd1306_WriteString(bufor, Font_11x18, White);
+
+	      // Line 3: PID DIAGNOSTICS (Control LED power)
+	      // shows pid effort
+	      int pid_pct = sys_state.control_signal / 10; // 0-1000 -> 0-100%
+	      sprintf(bufor, "PI:%d%% D:%d%%", pid_pct, position);
+	      ssd1306_SetCursor(0, 45);
+	      ssd1306_WriteString(bufor, Font_7x10, White);
+
+	      ssd1306_UpdateScreen();
+	    }
   /* USER CODE END 3 */
 }
 
@@ -359,6 +502,51 @@ static void MX_TIM1_Init(void)
 }
 
 /**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 9599;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 1999;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
+
+}
+
+/**
   * @brief TIM4 Initialization Function
   * @param None
   * @retval None
@@ -377,7 +565,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 95;
+  htim4.Init.Prescaler = 100;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 1000;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -396,6 +584,10 @@ static void MX_TIM4_Init(void)
   sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
   if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
@@ -404,6 +596,57 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 2 */
   HAL_TIM_MspPostInit(&htim4);
+
+}
+
+/**
+  * @brief TIM8 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM8_Init(void)
+{
+
+  /* USER CODE BEGIN TIM8_Init 0 */
+
+  /* USER CODE END TIM8_Init 0 */
+
+  TIM_Encoder_InitTypeDef sConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM8_Init 1 */
+
+  /* USER CODE END TIM8_Init 1 */
+  htim8.Instance = TIM8;
+  htim8.Init.Prescaler = 0;
+  htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim8.Init.Period = 65535;
+  htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim8.Init.RepetitionCounter = 0;
+  htim8.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
+  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC1Filter = 10;
+  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC2Filter = 10;
+  if (HAL_TIM_Encoder_Init(&htim8, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM8_Init 2 */
+
+  /* USER CODE END TIM8_Init 2 */
 
 }
 
@@ -568,7 +811,14 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+// called automatically every 200ms
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM3) {
+        // Do NOT run complex code here. Just set the flag.
+        run_controller_flag = 1;
+    }
+}
 /* USER CODE END 4 */
 
  /* MPU Configuration */
@@ -617,7 +867,7 @@ void Error_Handler(void)
 #ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
+  * where the assert_param error has occurred.
   * @param  file: pointer to the source file name
   * @param  line: assert_param error line source number
   * @retval None

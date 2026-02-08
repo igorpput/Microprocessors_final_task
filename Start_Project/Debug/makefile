@@ -61,7 +61,7 @@ main-build: Start_Project.elf secondary-outputs
 
 # Tool invocations
 Start_Project.elf Start_Project.map: $(OBJS) $(USER_OBJS) C:\Users\igorp\STM32CubeIDE\workspace_2.0.0\Start_Project\STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Start_Project.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\igorp\STM32CubeIDE\workspace_2.0.0\Start_Project\STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Start_Project.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "Start_Project.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\igorp\STM32CubeIDE\workspace_2.0.0\Start_Project\STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Start_Project.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
