@@ -35,34 +35,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := LED_brightness_controll
+BUILD_ARTIFACT_NAME := Light-sensor-Control
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-LED_brightness_controll.elf \
+Light-sensor-Control.elf \
 
 MAP_FILES += \
-LED_brightness_controll.map \
+Light-sensor-Control.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-LED_brightness_controll.list \
+Light-sensor-Control.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: LED_brightness_controll.elf secondary-outputs
+main-build: Light-sensor-Control.elf secondary-outputs
 
 # Tool invocations
-LED_brightness_controll.elf LED_brightness_controll.map: $(OBJS) $(USER_OBJS) C:\Users\Abdelrahman\ Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\STM32F746ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "LED_brightness_controll.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LED_brightness_controll.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Light-sensor-Control.elf Light-sensor-Control.map: $(OBJS) $(USER_OBJS) C:\Users\Abdelrahman\ Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\STM32F746ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Light-sensor-Control.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\Abdelrahman Salama\OneDrive\Documents\Microprocessors_final_task\Final-Project-microprocessor\Light-sensor-Control\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Light-sensor-Control.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -71,14 +71,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-LED_brightness_controll.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "LED_brightness_controll.list"
+Light-sensor-Control.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Light-sensor-Control.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) LED_brightness_controll.elf LED_brightness_controll.list LED_brightness_controll.map default.size.stdout
+	-$(RM) Light-sensor-Control.elf Light-sensor-Control.list Light-sensor-Control.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

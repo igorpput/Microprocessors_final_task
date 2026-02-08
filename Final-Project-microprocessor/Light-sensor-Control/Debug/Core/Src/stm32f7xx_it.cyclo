@@ -1,13 +1,4 @@
-../Core/Src/stm32f7xx_it.c:72:6:NMI_Handler	1
-../Core/Src/stm32f7xx_it.c:87:6:HardFault_Handler	1
-../Core/Src/stm32f7xx_it.c:102:6:MemManage_Handler	1
-../Core/Src/stm32f7xx_it.c:117:6:BusFault_Handler	1
-../Core/Src/stm32f7xx_it.c:132:6:UsageFault_Handler	1
-../Core/Src/stm32f7xx_it.c:147:6:SVC_Handler	1
-../Core/Src/stm32f7xx_it.c:160:6:DebugMon_Handler	1
-../Core/Src/stm32f7xx_it.c:173:6:PendSV_Handler	1
-../Core/Src/stm32f7xx_it.c:186:6:SysTick_Handler	1
-../Core/Src/stm32f7xx_it.c:207:6:DMA1_Stream3_IRQHandler	1
-../Core/Src/stm32f7xx_it.c:221:6:ADC_IRQHandler	1
-../Core/Src/stm32f7xx_it.c:235:6:TIM2_IRQHandler	1
-../Core/Src/stm32f7xx_it.c:249:6:USART3_IRQHandler	1
+../Drivers/CMSIS/Include/core_cm7.h:1985:22:__NVIC_ClearPendingIRQ	2
+../Core/Src/stm32f7xx_it.c:30:6:MX_USART3_UART_Init	2
+../Core/Src/stm32f7xx_it.c:58:6:HAL_UART_MspInit	4
+../Core/Src/stm32f7xx_it.c:123:6:HAL_UART_MspDeInit	2

@@ -3,6 +3,8 @@
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<item key="replaceBarOpen" value="false"/>
 	<list key="searchhistory">
+		<item value=" HAL_UART_IRQHandler(&amp;huart3);"/>
+		<item value="uint8_t msg[] ="/>
 		<item value="while"/>
 		<item value="PV"/>
 		<item value="USER CODE BEGIN 2"/>
