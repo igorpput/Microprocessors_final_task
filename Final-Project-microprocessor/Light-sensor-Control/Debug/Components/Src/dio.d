@@ -1,5 +1,5 @@
 Components/Src/dio.o: ../Components/Src/dio.c \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/dio.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/dio.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  ../Core/Inc/stm32f7xx_hal_conf.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
@@ -32,7 +32,7 @@ Components/Src/dio.o: ../Components/Src/dio.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/dio.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/dio.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h:

@@ -116,22 +116,19 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   */
 void process_uart_command(uint8_t c)
 {
-  // ========= INPUT MODE (waiting for number) =========
   if(waiting_for_value)
   {
-    // Digits 0..9
+    // Digits
     if(c >= '0' && c <= '9')
     {
-      if(cmd_idx < 4)   // up to 4 digits: 0..2000
+      if(cmd_idx < 4)   // allow up to 4 digits (0..2000)
       {
         cmd_buffer[cmd_idx++] = c;
-        HAL_UART_Transmit(&huart3, &c, 1, 100); // echo
+        HAL_UART_Transmit(&huart3, &c, 1, 100);
       }
-      return;
     }
-
-    // Backspace / DEL
-    if(c == '\b' || c == 127)
+    // Backspace/Delete
+    else if(c == '\b' || c == 127)
     {
       if(cmd_idx > 0)
       {
@@ -139,21 +136,13 @@ void process_uart_command(uint8_t c)
         uint8_t bs_seq[] = "\b \b";
         HAL_UART_Transmit(&huart3, bs_seq, sizeof(bs_seq)-1, 100);
       }
-      return;
     }
-
-    // Enter -> parse (accept 1..4 digits)
-    if(c == '\r' || c == '\n')
+    // Enter -> parse value (supports 1..4 digits)
+    else if(c == '\r' || c == '\n')
     {
-      if(cmd_idx == 0)
-      {
-        uint8_t msg[] = "\r\n[ERR] No value\r\n";
-        HAL_UART_Transmit(&huart3, msg, strlen((char*)msg), 100);
-      }
-      else
+      if(cmd_idx > 0)
       {
         cmd_buffer[cmd_idx] = '\0';
-
         int value = 0;
         sscanf((char*)cmd_buffer, "%d", &value);
 
@@ -171,69 +160,58 @@ void process_uart_command(uint8_t c)
           HAL_UART_Transmit(&huart3, error, strlen((char*)error), 100);
         }
       }
+      else
+      {
+        uint8_t msg[] = "\r\n[ERR] No value\r\n";
+        HAL_UART_Transmit(&huart3, msg, strlen((char*)msg), 100);
+      }
 
       waiting_for_value = 0;
       cmd_idx = 0;
-      return;
     }
-
     // ESC -> cancel
-    if(c == 27)
+    else if(c == 27)
     {
       waiting_for_value = 0;
       cmd_idx = 0;
       uint8_t cancel[] = "\r\nCancelled\r\n";
       HAL_UART_Transmit(&huart3, cancel, strlen((char*)cancel), 100);
-      return;
     }
-
-    // ignore anything else in input mode
-    return;
+    else
+    {
+      // ignore
+    }
   }
-
-  // ========= NORMAL MODE (commands) =========
-
-  // Set reference lux: accept L or R (upper/lower)
-  if(c == 'L' || c == 'l' || c == 'R' || c == 'r')
+  else if(c == 'L' || c == 'l')
   {
     waiting_for_value = 1;
     cmd_idx = 0;
     uint8_t prompt[] = "\r\nEnter lux (0-2000) then press Enter: ";
     HAL_UART_Transmit(&huart3, prompt, strlen((char*)prompt), 100);
-    return;
   }
-
-  // Status: accept I or S (upper/lower)
-  if(c == 'I' || c == 'i' || c == 'S' || c == 's')
+  else if(c == 'I' || c == 'i')
   {
     uint8_t tx_buffer[128];
     int resp_len = sprintf((char*)tx_buffer,
                            "Lux=%.1f  Ref=%.1f  Duty=%.1f%%  Err=%.1f\r\n",
                            luminance, luminance_ref, duty_filtered, luminance_ref - luminance);
     HAL_UART_Transmit(&huart3, tx_buffer, resp_len, 100);
-    return;
   }
-
-  // Help
-  if(c == '?')
+  else if(c == '?')
   {
     uint8_t help[] =
       "\r\nKeys:\r\n"
-      "  L/R -> set lux (0-2000) + Enter\r\n"
-      "  I/S -> status\r\n"
-      "  ?   -> help\r\n"
+      "  L -> set lux (0-2000) + Enter\r\n"
+      "  I -> status\r\n"
+      "  ? -> help\r\n"
       "  ESC -> cancel input\r\n";
     HAL_UART_Transmit(&huart3, help, strlen((char*)help), 100);
-    return;
   }
-
-  // Ignore Enter in normal mode
-  if(c == '\r' || c == '\n')
-    return;
-
-  // ignore anything else
+  else if(c == '\r' || c == '\n')
+  {
+    // Ignore
+  }
 }
-
 
 /**
   * @brief  Period elapsed callback

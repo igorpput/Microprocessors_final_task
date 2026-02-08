@@ -1,5 +1,5 @@
 Components/Src/bh1750_config.o: ../Components/Src/bh1750_config.c \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  ../Core/Inc/stm32f7xx_hal_conf.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
@@ -32,10 +32,10 @@ Components/Src/bh1750_config.o: ../Components/Src/bh1750_config.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750_config.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750_config.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h \
  ../Core/Inc/main.h ../Core/Inc/i2c.h ../Core/Inc/main.h
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h:
@@ -68,8 +68,8 @@ C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-C
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750_config.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750_config.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h:
 ../Core/Inc/main.h:
 ../Core/Inc/i2c.h:
 ../Core/Inc/main.h:

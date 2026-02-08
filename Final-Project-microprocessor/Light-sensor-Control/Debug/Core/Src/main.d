@@ -33,14 +33,14 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h \
  ../Core/Inc/adc.h ../Core/Inc/main.h ../Core/Inc/dma.h ../Core/Inc/i2c.h \
  ../Core/Inc/tim.h ../Core/Inc/usart.h ../Core/Inc/gpio.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/led_config.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/led.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/dio.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/pwm.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/aio.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/common.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750_config.h \
- C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/led_config.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/led.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/dio.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/pwm.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/aio.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/common.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750_config.h \
+ C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
@@ -81,11 +81,11 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/tim.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/gpio.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/led_config.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/led.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/dio.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/pwm.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/aio.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/common.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750_config.h:
-C:/Users/Abdelrahman\ Salama/Desktop/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/led_config.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/led.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/dio.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/pwm.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/aio.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/common.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750_config.h:
+C:/Users/Abdelrahman\ Salama/OneDrive/Documents/Microprocessors_final_task/Final-Project-microprocessor/Light-sensor-Control/Components/Inc/bh1750.h:
